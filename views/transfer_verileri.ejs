@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transfer Analiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e0f7fa;
+            color: #003366;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .options {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .options button {
+            margin: 0 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #00796b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .options button.active {
+            background-color: #004d40; /* Buton aktifken daha koyu renk */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #b0bec5;
+        }
+
+        th {
+            background-color: #f0f0f0;
+            cursor: pointer; /* Başlıklara tıklanabilirlik efekti */
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Transfer Analiz</h1>
+    <div class="options">
+        <button onclick="toggleSort('goals')">Gol Sayısına Göre Sıralama</button>
+        <button onclick="toggleSort('assists')">Asist Sayısına Göre Sıralama</button>
+        <button onclick="toggleSort('age')">Yaşa Göre Sıralama</button>
+        <button onclick="toggleSort('marketValue')">Piyasa Değeri</button>
+        <button onclick="toggleSort('averageScore')">Ortalama Puan</button>
+        <button onclick="toggleSort('height')">Boya Göre Sıralama</button>
+        <button onclick="resetTable()">Geri Dön</button>
+    </div>
+
+    <table id="playersTable">
+        <thead>
+            <tr>
+                <th>İsim</th>
+                <th>Oynadığı Takım</th>
+                <th>Uyruk</th>
+                <th>Yaş</th>
+                <th>Piyasa Değeri</th>
+                <th>Boy</th>
+                <th>Kilo</th>
+                <th>Pozisyon</th>
+                <th>Gol Sayısı</th>
+                <th>Asist Sayısı</th>
+                <th>Ortalama Puan</th>
+            </tr>
+        </thead>
+        <tbody id="playersBody">
+            <!-- Oyuncu bilgileri burada dinamik olarak eklenecek -->
+        </tbody>
+    </table>
+
+    <script>
+        const players = [
+            { name: 'Giovanni Reyna', team: 'Borussia Dortmund', country: 'Amerika Birleşik Devletleri', age: 21, marketValue: 24, height: 180, weight: '73kg', position: 'Orta Saha', goals: 6, assists: 5, averageScore: 7.6 },
+            { name: 'Cody Gakpo', team: 'Liverpool', country: 'Hollanda', age: 24, marketValue: 30, height: 188, weight: '80kg', position: 'Forvet', goals: 12, assists: 7, averageScore: 7.7 },
+            { name: 'Rafael Leão', team: 'Milan', country: 'Portekiz', age: 24, marketValue: 24, height: 188, weight: '84kg', position: 'Forvet', goals: 8, assists: 4, averageScore: 7.9 },
+            { name: 'Youssoufa Moukoko', team: 'Borussia Dortmund', country: 'Almanya', age: 19, marketValue: 18, height: 180, weight: '75kg', position: 'Forvet', goals: 6, assists: 2, averageScore: 7.5 },
+            { name: 'Antony', team: 'Manchester United', country: 'Brezilya', age: 23, marketValue: 30, height: 175, weight: '67kg', position: 'Forvet', goals: 7, assists: 6, averageScore: 7.6 },
+            { name: 'Moussa Diaby', team: 'Bayer Leverkusen', country: 'Fransa', age: 24, marketValue: 50, height: 170, weight: '68kg', position: 'Forvet', goals: 13, assists: 12, averageScore: 8.0 },
+            { name: 'Noni Madueke', team: 'Chelsea', country: 'İngiltere', age: 22, marketValue: 25, height: 180, weight: '70kg', position: 'Orta Saha', goals: 5, assists: 3, averageScore: 7.7 },
+            { name: 'Ferran Torres', team: 'Barcelona', country: 'İspanya', age: 24, marketValue: 35, height: 184, weight: '78kg', position: 'Forvet', goals: 7, assists: 6, averageScore: 7.6 },
+            { name: 'Anssumane Fati', team: 'Barcelona', country: 'İspanya', age: 21, marketValue: 30, height: 178, weight: '75kg', position: 'Forvet', goals: 4, assists: 1, averageScore: 7.4 },
+            { name: 'Samuel Chukwueze', team: 'Villarreal', country: 'Nijerya', age: 24, marketValue: 20, height: 175, weight: '72kg', position: 'Forvet', goals: 7, assists: 8, averageScore: 7.6 },
+            { name: 'Rasmus Højlund', team: 'Atalanta', country: 'Danimarka', age: 20, marketValue: 30, height: 190, weight: '88kg', position: 'Forvet', goals: 9, assists: 3, averageScore: 7.6 },
+            { name: 'Benjamin Šeško', team: 'RB Leipzig', country: 'Slovenya', age: 21, marketValue: 35, height: 194, weight: '86kg', position: 'Forvet', goals: 8, assists: 3, averageScore: 7.8 },
+            { name: 'César Montes', team: 'Espanyol', country: 'Meksika', age: 22, marketValue: 20, height: 190, weight: '80kg', position: 'Defans', goals: 5, assists: 2, averageScore: 7.5 },
+            { name: 'Gonçalo Ramos', team: 'Benfica', country: 'Portekiz', age: 22, marketValue: 40, height: 185, weight: '79kg', position: 'Forvet', goals: 19, assists: 4, averageScore: 7.9 },
+            { name: 'Vitor Roque', team: 'Athletico Paranaense', country: 'Brezilya', age: 18, marketValue: 25, height: 176, weight: '70kg', position: 'Forvet', goals: 12, assists: 5, averageScore: 7.7 },
+            { name: 'Mauro Junior', team: 'PSV Eindhoven', country: 'Brezilya', age: 22, marketValue: 20, height: 173, weight: '72kg', position: 'Defans', goals: 8, assists: 5, averageScore: 7.5 },
+            { name: 'Amadou Onana', team: 'Everton', country: 'Belçika', age: 22, marketValue: 30, height: 195, weight: '85kg', position: 'Orta Saha', goals: 3, assists: 2, averageScore: 7.6 },
+            { name: 'Enzo Fernández', team: 'Chelsea', country: 'Arjantin', age: 22, marketValue: 80, height: 180, weight: '75kg', position: 'Orta Saha', goals: 5, assists: 7, averageScore: 8.0 },
+            { name: 'Ibrahima Sangaré', team: 'PSV Eindhoven', country: 'Fildişi Sahili', age: 22, marketValue: 25, height: 187, weight: '80kg', position: 'Defans', goals: 7, assists: 4, averageScore: 7.7 },
+            { name: 'Jude Bellingham', team: 'Real Madrid', country: 'İngiltere', age: 20, marketValue: 120, height: 186, weight: '73kg', position: 'Orta Saha', goals: 14, assists: 9, averageScore: 8.5 },
+            { name: 'Amadou Haidara', team: 'RB Leipzig', country: 'Mali', age: 22, marketValue: 20, height: 172, weight: '74kg', position: 'Orta Saha', goals: 6, assists: 2, averageScore: 7.5 },
+            { name: 'Orkun Kökçü', team: 'Feyenoord', country: 'Türkiye', age: 22, marketValue: 30, height: 175, weight: '72kg', position: 'Orta Saha', goals: 11, assists: 7, averageScore: 7.8 },
+            { name: 'Khephren Thuram', team: 'Nice', country: 'Fransa', age: 22, marketValue: 30, height: 187, weight: '80kg', position: 'Orta Saha', goals: 2, assists: 3, averageScore: 7.6 },
+            { name: 'Florentino Luís', team: 'Benfica', country: 'Portekiz', age: 24, marketValue: 22, height: 185, weight: '78kg', position: 'Orta Saha', goals: 1, assists: 2, averageScore: 7.5 },
+            { name: 'Sandro Tonali', team: 'Newcastle United', country: 'İtalya', age: 22, marketValue: 60, height: 182, weight: '74kg', position: 'Orta Saha', goals: 5, assists: 2, averageScore: 7.9 },
+            { name: 'Declan Rice', team: 'Arsenal', country: 'İngiltere', age: 22, marketValue: 80, height: 185, weight: '79kg', position: 'Orta Saha', goals: 4, assists: 3, averageScore: 8.0 },
+            { name: 'Sergio Gómez', team: 'Manchester City', country: 'İspanya', age: 22, marketValue: 25, height: 174, weight: '67kg', position: 'Orta Saha', goals: 2, assists: 4, averageScore: 7.4 },
+            { name: 'Boubacar Kamara', team: 'Aston Villa', country: 'Fransa', age: 22, marketValue: 30, height: 182, weight: '76kg', position: 'Orta Saha', goals: 1, assists: 3, averageScore: 7.6 },
+            { name: 'Gavin Bazunu', team: 'Southampton', country: 'İrlanda', age: 21, marketValue: 20, height: 198, weight: '85kg', position: 'Kaleci', goals: 5, assists: 0, averageScore: 7.5 },
+            { name: 'Illan Meslier', team: 'Leeds United', country: 'Fransa', age: 24, marketValue: 22, height: 195, weight: '80kg', position: 'Kaleci', goals: 1, assists: 0, averageScore: 7.6 },
+            { name: 'Sofyan Amrabat', team: 'Manchester United', country: 'Fas', age: 27, marketValue: 30, height: 182, weight: '75kg', position: 'Orta Saha', goals: 2, assists: 3, averageScore: 7.5 },
+            { name: 'Victor Osimhen', team: 'Napoli', country: 'Nijerya', age: 24, marketValue: 80, height: 185, weight: '78kg', position: 'Forvet', goals: 18, assists: 3, averageScore: 8.2 },
+            { name: 'Alfonso Pedraza', team: 'Villarreal', country: 'İspanya', age: 27, marketValue: 15, height: 176, weight: '74kg', position: 'Defans', goals: 3, assists: 5, averageScore: 7.2 },
+            { name: 'Alejandro Garnacho', team: 'Manchester United', country: 'Arjantin', age: 19, marketValue: 25, height: 174, weight: '68kg', position: 'Forvet', goals: 4, assists: 2, averageScore: 7.4 },
+            { name: 'Dani Olmo', team: 'RB Leipzig', country: 'İspanya', age: 25, marketValue: 55, height: 178, weight: '75kg', position: 'Orta Saha', goals: 7, assists: 6, averageScore: 7.8 },
+            { name: 'Mohammed Kudus', team: 'West Ham', country: 'Gana', age: 23, marketValue: 30, height: 175, weight: '68kg', position: 'Orta Saha', goals: 5, assists: 4, averageScore: 7.6 },
+            { name: 'Pascal Groß', team: 'Brighton', country: 'Almanya', age: 32, marketValue: 18, height: 178, weight: '78kg', position: 'Orta Saha', goals: 5, assists: 8, averageScore: 7.4 },
+            { name: 'Rodrygo', team: 'Real Madrid', country: 'Brezilya', age: 22, marketValue: 70, height: 174, weight: '75kg', position: 'Forvet', goals: 8, assists: 5, averageScore: 7.8 },
+            { name: 'Jakob Pöltl', team: 'VfL Wolfsburg', country: 'Avusturya', age: 22, marketValue: 25, height: 186, weight: '79kg', position: 'Forvet', goals: 9, assists: 3, averageScore: 7.5 },
+            { name: 'Dejan Kulusevski', team: 'Tottenham', country: 'İsveç', age: 23, marketValue: 40, height: 184, weight: '74kg', position: 'Forvet', goals: 10, assists: 7, averageScore: 8.0 },
+            { name: 'Thiago Alcântara', team: 'Liverpool', country: 'İspanya', age: 32, marketValue: 20, height: 174, weight: '70kg', position: 'Orta Saha', goals: 4, assists: 5, averageScore: 7.9 },
+            { name: 'Nicolas González', team: 'Fiorentina', country: 'Arjantin', age: 25, marketValue: 30, height: 178, weight: '75kg', position: 'Orta Saha', goals: 5, assists: 3, averageScore: 7.4 },
+            { name: 'Youssef En-Nesyri', team: 'Sevilla', country: 'Fas', age: 26, marketValue: 30, height: 189, weight: '77kg', position: 'Forvet', goals: 9, assists: 1, averageScore: 7.5 },
+            { name: 'Marco Verratti', team: 'Al Arabi', country: 'İtalya', age: 30, marketValue: 18, height: 165, weight: '59kg', position: 'Orta Saha', goals: 2, assists: 5, averageScore: 7.6 },
+            { name: 'Andreas Christensen', team: 'Barcelona', country: 'Danimarka', age: 27, marketValue: 35, height: 186, weight: '82kg', position: 'Defans', goals: 1, assists: 0, averageScore: 7.2 },
+            { name: 'Ryan Gravenberch', team: 'Bayern Münih', country: 'Hollanda', age: 21, marketValue: 35, height: 185, weight: '82kg', position: 'Orta Saha', goals: 3, assists: 2, averageScore: 7.6 },
+            { name: 'Bruno Guimarães', team: 'Newcastle United', country: 'Brezilya', age: 25, marketValue: 60, height: 180, weight: '76kg', position: 'Orta Saha', goals: 4, assists: 4, averageScore: 7.8 },
+            { name: 'William Saliba', team: 'Arsenal', country: 'Fransa', age: 22, marketValue: 50, height: 189, weight: '80kg', position: 'Defans', goals: 2, assists: 1, averageScore: 7.7 },
+            { name: 'Victor Lindelöf', team: 'Manchester United', country: 'İsveç', age: 29, marketValue: 30, height: 187, weight: '80kg', position: 'Defans', goals: 1, assists: 1, averageScore: 7.4 },
+            { name: 'Christian Romero', team: 'Tottenham', country: 'Arjantin', age: 25, marketValue: 45, height: 182, weight: '75kg', position: 'Defans', goals: 2, assists: 2, averageScore: 7.8 },
+            { name: 'Reece James', team: 'Chelsea', country: 'İngiltere', age: 23, marketValue: 50, height: 180, weight: '76kg', position: 'Defans', goals: 3, assists: 4, averageScore: 7.9 },
+            { name: 'Tammy Abraham', team: 'AS Roma', country: 'İngiltere', age: 25, marketValue: 30, height: 190, weight: '89kg', position: 'Forvet', goals: 5, assists: 2, averageScore: 7.3 },
+            { name: 'Mohamed Elneny', team: 'Arsenal', country: 'Mısır', age: 31, marketValue: 10, height: 180, weight: '77kg', position: 'Orta Saha', goals: 2, assists: 2, averageScore: 7.1 },
+            { name: 'Wilfried Zaha', team: 'Royale Union Saint-Gilloise', country: 'Fildişi Sahili', age: 31, marketValue: 25, height: 180, weight: '76kg', position: 'Forvet', goals: 6, assists: 3, averageScore: 7.4 }
+        ];
+
+        function displayPlayers(sortedPlayers) {
+            const playersBody = document.getElementById('playersBody');
+            playersBody.innerHTML = ''; // Önceki verileri temizle
+
+            sortedPlayers.forEach(player => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${player.name}</td>
+                    <td>${player.team}</td>
+                    <td>${player.country}</td>
+                    <td>${player.age}</td>
+                    <td>€${player.marketValue}M</td>
+                    <td>${player.height} cm</td>
+                    <td>${player.weight}</td>
+                    <td>${player.position}</td>
+                    <td>${player.goals}</td>
+                    <td>${player.assists}</td>
+                    <td>${player.averageScore}</td>
+                `;
+                playersBody.appendChild(row);
+            });
+        }
+
+        const activeSorts = new Set(); // Aktif butonların takibi için Set kullanalım
+
+        function toggleSort(attribute) {
+            if (activeSorts.has(attribute)) {
+                activeSorts.delete(attribute); // Eğer buton zaten aktifse, kaldır
+            } else {
+                activeSorts.add(attribute); // Eğer buton aktif değilse, ekle
+            }
+
+            const sortedPlayers = [...players];
+
+            // Sıralama işlemi
+            if (activeSorts.size > 0) {
+                for (const sortAttribute of activeSorts) {
+                    switch (sortAttribute) {
+                        case 'goals':
+                            sortedPlayers.sort((a, b) => b.goals - a.goals);
+                            break;
+                        case 'assists':
+                            sortedPlayers.sort((a, b) => b.assists - a.assists);
+                            break;
+                        case 'age':
+                            sortedPlayers.sort((a, b) => a.age - b.age);
+                            break;
+                        case 'marketValue':
+                            sortedPlayers.sort((a, b) => b.marketValue - a.marketValue);
+                            break;
+                        case 'averageScore':
+                            sortedPlayers.sort((a, b) => b.averageScore - a.averageScore);
+                            break;
+                        case 'height':
+                            sortedPlayers.sort((a, b) => b.height - a.height);
+                            break;
+                    }
+                }
+            }
+
+            // Butonların durumunu güncelle
+            document.querySelectorAll('.options button').forEach(button => {
+                button.classList.toggle('active', activeSorts.has(button.textContent.trim().split(" ")[0].toLowerCase()));
+            });
+
+            displayPlayers(sortedPlayers); // Sıralanmış oyuncuları göster
+        }
+
+        function resetTable() {
+            activeSorts.clear(); // Aktif butonları temizle
+            document.querySelectorAll('.options button').forEach(button => button.classList.remove('active')); // Tüm butonlardan 'active' sınıfını kaldır
+            displayPlayers(players); // Tüm oyuncuları göster
+        }
+
+        // Sayfa yüklendiğinde tüm oyuncuları göster
+        document.addEventListener('DOMContentLoaded', () => displayPlayers(players));
+    </script>
+</body>
+
+</html>

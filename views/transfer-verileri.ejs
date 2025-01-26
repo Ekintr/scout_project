@@ -1,0 +1,42 @@
+<%- include('partials/header', {title: 'Transfer Verileri'}) %>
+<%- include('partials/sidebar') %>
+
+<div class="content">
+    <h1>Transfer Verileri</h1>
+    <table id="playersTable">
+        <thead>
+            <tr>
+                <th>İsim</th>
+                <th>Oynadığı Takım</th>
+                <th>Uyruk</th>
+                <th>Yaş</th>
+                <th>Piyasa Değeri</th>
+                <th>Boy</th>
+                <th>Kilo</th>
+                <th>Pozisyon</th>
+                <th>Gol Sayısı</th>
+                <th>Asist Sayısı</th>
+                <th>Ortalama Puan</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% players.forEach(player => { %>
+                <tr>
+                    <td><%= player.name %></td>
+                    <td><%= player.team %></td>
+                    <td><%= player.country %></td>
+                    <td><%= player.age %></td>
+                    <td>€<%= player.marketValue %>M</td>
+                    <td><%= player.height %> cm</td>
+                    <td><%= player.weight %></td>
+                    <td><%= player.position %></td>
+                    <td><%= player.goals %></td>
+                    <td><%= player.assists %></td>
+                    <td><%= player.averageScore %></td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+</div>
+
+<%- include('partials/footer') %> 

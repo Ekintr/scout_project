@@ -1,0 +1,284 @@
+<%- include('partials/header', {title: 'Takımım'}) %>
+<%- include('partials/sidebar') %>
+
+<div class="content">
+    <h1>Takımım</h1>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beşiktaş 2024 Kadrosu</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #e0f7fa; /* Açık mavi arka plan */
+        color: #003366; /* Koyu mavi metin rengi */
+        margin: 0;
+        padding: 20px;
+    }
+
+    #players-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .player-card {
+        background-color: #ffffff; /* Beyaz arka plan */
+        border: 1px solid #b0bec5; /* Gri border */
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+    }
+
+    .player-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .player-info {
+        margin-bottom: 8px;
+    }
+
+    .scout-comment {
+        font-style: italic;
+        color: #006064; /* Koyu mavi/turkuaz tonu */
+    }
+    
+    .sort-button {
+        margin-bottom: 10px;
+        padding: 10px;
+        background-color: #003366; /* Koyu mavi buton */
+        color: #ffffff; /* Beyaz metin */
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .sort-button:hover {
+        background-color: #005b7f; /* Buton hover rengi */
+    }
+  </style>
+</head>
+<body>
+  <h1>Beşiktaş 2024 Kadrosu</h1>
+  
+  <button class="sort-button" onclick="sortPlayers()">En Yüksek Puanı Olanları Göster</button>
+  <button class="sort-button" onclick="sortLowestPlayers()">En Düşük Puanı Olanları Göster</button>
+
+  <div id="players-container">
+    <!-- Mevcut Oyuncular -->
+    <div class="player-card" data-position="Kaleci" data-value="high" data-rating="8.5">
+      <div class="player-info"><strong>İsim:</strong> Mert Günok</div>
+      <div class="player-info"><strong>Oynadığı Takım:</strong> Beşiktaş | <strong>Uyruk:</strong> Türkiye</div>
+      <div class="player-info"><strong>Yaş:</strong> 34 | <strong>Piyasa Değeri:</strong> €6M | <strong>Boy:</strong> 1.92 m | <strong>Kilo:</strong> 85 kg</div>
+      <div class="player-info"><strong>Maç Başına Puan:</strong> 8.5</div>
+      <div class="scout-comment">Tecrübeli kaleci, takımın güvenilir ismi.</div>
+    </div>
+
+    <div class="player-card" data-position="Defans" data-value="mid" data-rating="7.2">
+      <div class="player-info"><strong>İsim:</strong> Jens Svensson</div>
+      <div class="player-info"><strong>Oynadığı Takım:</strong> Beşiktaş | <strong>Uyruk:</strong> Norveç</div>
+      <div class="player-info"><strong>Yaş:</strong> 30 | <strong>Piyasa Değeri:</strong> €6.5M | <strong>Boy:</strong> 1.76 m | <strong>Kilo:</strong> 72 kg</div>
+      <div class="player-info"><strong>Maç Başına Puan:</strong> 7.2</div>
+      <div class="scout-comment">Çalışkan ve sağlam bir sağ bek.</div>
+    </div>
+
+    <div class="player-card" data-position="Defans" data-value="mid" data-rating="7.5">
+      <div class="player-info"><strong>İsim:</strong> Gabriel Paulista</div>
+      <div class="player-info"><strong>Oynadığı Takım:</strong> Beşiktaş | <strong>Uyruk:</strong> Brezilya</div>
+      <div class="player-info"><strong>Yaş:</strong> 33 | <strong>Piyasa Değeri:</strong> €8M | <strong>Boy:</strong> 1.87 m | <strong>Kilo:</strong> 81 kg</div>
+      <div class="player-info"><strong>Maç Başına Puan:</strong> 7.5</div>
+      <div class="scout-comment">Savunmada deneyimli ve fiziksel olarak güçlü.</div>
+    </div>
+
+    <div class="player-card" data-position="Defans" data-value="mid" data-rating="8.0">
+      <div class="player-info"><strong>İsim:</strong> Felix Uduokhai</div>
+      <div class="player-info"><strong>Oynadığı Takım:</strong> Beşiktaş | <strong>Uyruk:</strong> Almanya</div>
+      <div class="player-info"><strong>Yaş:</strong> 26 | <strong>Piyasa Değeri:</strong> €10M | <strong>Boy:</strong> 1.92 m | <strong>Kilo:</strong> 85 kg</div>
+      <div class="player-info"><strong>Maç Başına Puan:</strong> 8.0</div>
+      <div class="scout-comment">Savunmada sağlam ve hava toplarında etkili.</div>
+    </div>
+
+    <div class="player-card" data-position="Defans" data-value="mid" data-rating="6.8">
+      <div class="player-info"><strong>İsim:</strong> Arthur Masuaku</div>
+      <div class="player-info"><strong>Oynadığı Takım:</strong> Beşiktaş | <strong>Uyruk:</strong> Kongo</div>
+      <div class="player-info"><strong>Yaş:</strong> 30 | <strong>Piyasa Değeri:</strong> €4M | <strong>Boy:</strong> 1.79 m | <strong>Kilo:</strong> 70 kg</div>
+      <div class="player-info"><strong>Maç Başına Puan:</strong> 6.8</div>
+      <div class="scout-comment">Ofansif bek, sol kanatta etkili.</div>
+    </div>
+
+    <div class="player-card" data-position="Orta Saha" data-value="high" data-rating="9.1">
+      <div class="player-info"><strong>İsim:</strong> Al-Musrati</div>
+      <div class="player-info"><strong>Oynadığı Takım:</strong> Beşiktaş | <strong>Uyruk:</strong> Libya</div>
+      <div class="player-info"><strong>Yaş:</strong> 27 | <strong>Piyasa Değeri:</strong> €15M | <strong>Boy:</strong> 1.91 m | <strong>Kilo:</strong> 84 kg</div>
+      <div class="player-info"><strong>Maç Başına Puan:</strong> 9.1</div>
+      <div class="scout-comment">Orta sahada kesici rolünde uzman.</div>
+    </div>
+
+    <div class="player-card" data-position="Orta Saha" data-value="high" data-rating="8.7">
+      <div class="player-info"><strong>İsim:</strong> Gedson Fernandes</div>
+      <div class="player-info"><strong>Oynadığı Takım:</strong> Beşiktaş | <strong>Uyruk:</strong> Portekiz</div>
+      <div class="player-info"><strong>Yaş:</strong> 25 | <strong>Piyasa Değeri:</strong> €30M | <strong>Boy:</strong> 1.83 m | <strong>Kilo:</strong> 77 kg</div>
+      <div class="player-info"><strong>Maç Başına Puan:</strong> 8.7</div>
+      <div class="scout-comment">Hızlı, teknik ve yaratıcı bir orta saha.</div>
+    </div>
+
+    <div class="player-card" data-position="Orta Saha" data-value="high" data-rating="9.3">
+      <div class="player-info"><strong>İsim:</strong> Milot Rashica</div>
+      <div class="player-info"><strong>Oynadığı Takım:</strong> Beşiktaş | <strong>Uyruk:</strong> Kosova</div>
+      <div class="player-info"><strong>Yaş:</strong> 27 | <strong>Piyasa Değeri:</strong> €8M | <strong>Boy:</strong> 1.78 m | <strong>Kilo:</strong> 70 kg</div>
+      <div class="player-info"><strong>Maç Başına Puan:</strong> 9.3</div>
+      <div class="scout-comment">Kanatlarda hızlı ve skorer.</div>
+    </div>
+
+    <div class="player-card" data-position="Orta Saha" data-value="high" data-rating="8.0">
+      <div class="player-info"><strong>İsim:</strong> Rafa Silva</div>
+      <div class="player-info"><strong>Oynadığı Takım:</strong> Beşiktaş | <strong>Uyruk:</strong> Portekiz</div>
+      <div class="player-info"><strong>Yaş:</strong> 31 | <strong>Piyasa Değeri:</strong> €30M | <strong>Boy:</strong> 1.70 m | <strong>Kilo:</strong> 63 kg</div>
+      <div class="player-info"><strong>Maç Başına Puan:</strong> 8.0</div>
+      <div class="player-info"><strong>2022/2023 İstatistikleri:</strong> 34 maç, 10 gol, 8 asist</div>
+      <div class="scout-comment">Hızlı ve yaratıcı; orta sahaya hareketlilik katıyor.</div>
+    </div>
+
+    <div class="player-card" data-position="Forvet" data-value="low" data-rating="5.4">
+      <div class="player-info"><strong>İsim:</strong> Semih Kılıçsoy</div>
+      <div class="player-info"><strong>Oynadığı Takım:</strong> Beşiktaş | <strong>Uyruk:</strong> Türkiye</div>
+      <div class="player-info"><strong>Yaş:</strong> 19 | <strong>Piyasa Değeri:</strong> €17M | <strong>Boy:</strong> 1.82 m | <strong>Kilo:</strong> 75 kg</div>
+      <div class="player-info"><strong>Maç Başına Puan:</strong> 5.4</div>
+      <div class="scout-comment">Genç yetenek, gelecek vaat eden bir forvet.</div>
+    </div>
+
+    <div class="player-card" data-position="Forvet" data-value="high" data-rating="9.0">
+      <div class="player-info"><strong>İsim:</strong> Ciro Immobile</div>
+      <div class="player-info"><strong>Oynadığı Takım:</strong> Beşiktaş | <strong>Uyruk:</strong> İtalya</div>
+      <div class="player-info"><strong>Yaş:</strong> 34 | <strong>Piyasa Değeri:</strong> €15M | <strong>Boy:</strong> 1.85 m | <strong>Kilo:</strong> 81 kg</div>
+      <div class="player-info"><strong>Maç Başına Puan:</strong> 9.0</div>
+      <div class="scout-comment">Tecrübeli golcü, liderlik özellikleriyle takımını ileri taşıyor.</div>
+    </div>
+
+    <!-- Yeni Eklenen Oyuncular -->
+    <div class="player-card" data-position="Kaleci" data-value="mid" data-rating="7.6">
+      <div class="player-info"><strong>İsim:</strong> Ersin Destanoğlu</div>
+      <div class="player-info"><strong>Oynadığı Takım:</strong> Beşiktaş | <strong>Uyruk:</strong> Türkiye</div>
+      <div class="player-info"><strong>Yaş:</strong> 23 | <strong>Piyasa Değeri:</strong> €5M | <strong>Boy:</strong> 1.85 m | <strong>Kilo:</strong> 75 kg</div>
+      <div class="player-info"><strong>Maç Başına Puan:</strong> 7.6</div>
+      <div class="scout-comment">Gelecek vaad eden kaleci, önemli kurtarışlar yapabilir.</div>
+    </div>
+
+    <div class="player-card" data-position="Orta Saha" data-value="mid" data-rating="8.5">
+      <div class="player-info"><strong>İsim:</strong> Emirhan Topçu</div>
+      <div class="player-info"><strong>Oynadığı Takım:</strong> Beşiktaş | <strong>Uyruk:</strong> Türkiye</div>
+      <div class="player-info"><strong>Yaş:</strong> 20 | <strong>Piyasa Değeri:</strong> €7M | <strong>Boy:</strong> 1.75 m | <strong>Kilo:</strong> 70 kg</div>
+      <div class="player-info"><strong>Maç Başına Puan:</strong> 8.5</div>
+      <div class="scout-comment">Yetenekli genç orta saha oyuncusu, oyun görüşü gelişmekte.</div>
+    </div>
+
+    <div class="player-card" data-position="Orta Saha" data-value="mid" data-rating="7.4">
+      <div class="player-info"><strong>İsim:</strong> Onur Bulut</div>
+      <div class="player-info"><strong>Oynadığı Takım:</strong> Beşiktaş | <strong>Uyruk:</strong> Türkiye</div>
+      <div class="player-info"><strong>Yaş:</strong> 26 | <strong>Piyasa Değeri:</strong> €3M | <strong>Boy:</strong> 1.80 m | <strong>Kilo:</strong> 75 kg</div>
+      <div class="player-info"><strong>Maç Başına Puan:</strong> 7.4</div>
+      <div class="scout-comment">Dengeli oyun anlayışıyla orta sahada etkili.</div>
+    </div>
+
+    <div class="player-card" data-position="Orta Saha" data-value="mid" data-rating="7.8">
+      <div class="player-info"><strong>İsim:</strong> Necip Uysal</div>
+      <div class="player-info"><strong>Oynadığı Takım:</strong> Beşiktaş | <strong>Uyruk:</strong> Türkiye</div>
+      <div class="player-info"><strong>Yaş:</strong> 31 | <strong>Piyasa Değeri:</strong> €1M | <strong>Boy:</strong> 1.85 m | <strong>Kilo:</strong> 80 kg</div>
+      <div class="player-info"><strong>Maç Başına Puan:</strong> 7.8</div>
+      <div class="scout-comment">Takımın dinamosu, her bölgede oynayabiliyor.</div>
+    </div>
+
+    <div class="player-card" data-position="Forvet" data-value="mid" data-rating="6.4">
+      <div class="player-info"><strong>İsim:</strong> Emrecan Terzi</div>
+      <div class="player-info"><strong>Oynadığı Takım:</strong> Beşiktaş | <strong>Uyruk:</strong> Türkiye</div>
+      <div class="player-info"><strong>Yaş:</strong> 21 | <strong>Piyasa Değeri:</strong> €1.5M | <strong>Boy:</strong> 1.78 m | <strong>Kilo:</strong> 72 kg</div>
+      <div class="player-info"><strong>Maç Başına Puan:</strong> 6.4</div>
+      <div class="scout-comment">Genç yetenek, forvet olarak potansiyeli yüksek.</div>
+    </div>
+
+    <div class="player-card" data-position="Defans" data-value="mid" data-rating="7.1">
+      <div class="player-info"><strong>İsim:</strong> Ndour</div>
+      <div class="player-info"><strong>Oynadığı Takım:</strong> Beşiktaş | <strong>Uyruk:</strong> Senegal</div>
+      <div class="player-info"><strong>Yaş:</strong> 23 | <strong>Piyasa Değeri:</strong> €8M | <strong>Boy:</strong> 1.83 m | <strong>Kilo:</strong> 76 kg</div>
+      <div class="player-info"><strong>Maç Başına Puan:</strong> 7.1</div>
+      <div class="scout-comment">Savunmada sağlam duruyor, insani özellikleri iyi.</div>
+    </div>
+
+    <div class="player-card" data-position="Orta Saha" data-value="mid" data-rating="7.6">
+      <div class="player-info"><strong>İsim:</strong> Salih Uçan</div>
+      <div class="player-info"><strong>Oynadığı Takım:</strong> Beşiktaş | <strong>Uyruk:</strong> Türkiye</div>
+      <div class="player-info"><strong>Yaş:</strong> 27 | <strong>Piyasa Değeri:</strong> €3.5M | <strong>Boy:</strong> 1.76 m | <strong>Kilo:</strong> 70 kg</div>
+      <div class="player-info"><strong>Maç Başına Puan:</strong> 7.6</div>
+      <div class="scout-comment">Teknik ve ofansif yetenekleri yüksek bir oyuncu.</div>
+    </div>
+
+    <div class="player-card" data-position="Forvet" data-value="mid" data-rating="8.1">
+      <div class="player-info"><strong>İsim:</strong>Bahtiyar Zaynutdinov</div>
+      <div class="player-info"><strong>Oynadığı Takım:</strong> Beşiktaş | <strong>Uyruk:</strong> Türkiye</div>
+      <div class="player-info"><strong>Yaş:</strong> 21 | <strong>Piyasa Değeri:</strong> €5M | <strong>Boy:</strong> 1.80 m | <strong>Kilo:</strong> 74 kg</div>
+      <div class="player-info"><strong>Maç Başına Puan:</strong> 8.1</div>
+      <div class="scout-comment">Çok mevkili bir yedek.</div>
+    </div>
+
+    <div class="player-card" data-position="Forvet" data-value="mid" data-rating="9.5">
+      <div class="player-info"><strong>İsim:</strong> Alex Oxlade-Chamberlain</div>
+      <div class="player-info"><strong>Oynadığı Takım:</strong> Beşiktaş | <strong>Uyruk:</strong> İngiltere</div>
+      <div class="player-info"><strong>Yaş:</strong> 30 | <strong>Piyasa Değeri:</strong> €7M | <strong>Boy:</strong> 1.80 m | <strong>Kilo:</strong> 80 kg</div>
+      <div class="player-info"><strong>Maç Başına Puan:</strong> 9.5</div>
+      <div class="scout-comment">Yetenekli ve deneyimli oyuncu, ofansa büyük katkı sağlıyor.</div>
+    </div>
+
+    <div class="player-card" data-position="Forvet" data-value="mid" data-rating="8.2">
+      <div class="player-info"><strong>İsim:</strong> Mustafa Hekimoğlu</div>
+      <div class="player-info"><strong>Oynadığı Takım:</strong> Beşiktaş | <strong>Uyruk:</strong> Türkiye</div>
+      <div class="player-info"><strong>Yaş:</strong> 23 | <strong>Piyasa Değeri:</strong> €5M | <strong>Boy:</strong> 1.83 m | <strong>Kilo:</strong> 77 kg</div>
+      <div class="player-info"><strong>Maç Başına Puan:</strong> 8.2</div>
+      <div class="scout-comment">Genç dinamik forvet, takımda önemli bir rol oynayabilir.</div>
+    </div>
+
+    <div class="player-card" data-position="Defans" data-value="mid" data-rating="6.3">
+      <div class="player-info"><strong>İsim:</strong> Can Keleş</div>
+      <div class="player-info"><strong>Oynadığı Takım:</strong> Beşiktaş | <strong>Uyruk:</strong> Türkiye</div>
+      <div class="player-info"><strong>Yaş:</strong> 22 | <strong>Piyasa Değeri:</strong> €3M | <strong>Boy:</strong> 1.82 m | <strong>Kilo:</strong> 73 kg</div>
+      <div class="player-info"><strong>Maç Başına Puan:</strong> 6.3</div>
+      <div class="scout-comment">Dinamik bir bek, savunma ve hücumda etkin.</div>
+    </div>
+  </div>
+
+  <script>
+    function sortPlayers() {
+      const container = document.getElementById('players-container');
+      const players = Array.from(container.getElementsByClassName('player-card'));
+
+      players.sort((a, b) => {
+        const ratingA = parseFloat(a.getAttribute('data-rating'));
+        const ratingB = parseFloat(b.getAttribute('data-rating'));
+        return ratingB - ratingA; // Büyükten küçüğe sıralama
+      });
+
+      // Öğeleri yeniden ekleme
+      players.forEach(player => container.appendChild(player));
+    }
+
+    function sortLowestPlayers() {
+      const container = document.getElementById('players-container');
+      const players = Array.from(container.getElementsByClassName('player-card'));
+
+      players.sort((a, b) => {
+        const ratingA = parseFloat(a.getAttribute('data-rating'));
+        const ratingB = parseFloat(b.getAttribute('data-rating'));
+        return ratingA - ratingB; // Küçükten büyüğe sıralama
+      });
+
+      // Öğeleri yeniden ekleme
+      players.forEach(player => container.appendChild(player));
+    }
+  </script>
+</body>
+</html>
+</div>
+
+<%- include('partials/footer') %>

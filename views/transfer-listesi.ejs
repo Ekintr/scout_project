@@ -1,0 +1,209 @@
+<%- include('partials/header', {title: 'Transfer Listesi'}) %>
+<%- include('partials/sidebar', {
+    user: { username: 'Admin' },
+    currentPage: 'transfer-listesi'
+}) %>
+    <div class="container">
+        <!-- Ana İçerik -->
+        <div class="content">
+            <h1>Transfer Listesi</h1>
+            
+            <!-- Üst Filtreleme -->
+            <div class="top-filter">
+                <div class="filter-group">
+                    <button class="filter-btn active" data-group="all">Tüm Mevkiler</button>
+                    <button class="filter-btn" data-group="defans">Defans</button>
+                    <button class="filter-btn" data-group="ortasaha">Orta Saha</button>
+                    <button class="filter-btn" data-group="hucum">Hücum</button>
+                </div>
+            </div>
+
+            <!-- Oyuncu Kartları -->
+            <div class="players-grid">
+                <% if (players && players.length > 0) { %>
+                    <% players.forEach(function(player) { %>
+                        <div class="player-card" data-mevki="<%= player.oyuncu_mevki %>">
+                            <div class="player-header">
+                                <h3><%= player.oyuncu_ad %></h3>
+                                <span class="player-position"><%= player.mevki_ad %></span>
+                            </div>
+                            <div class="player-info">
+                                <p><i class="fas fa-shield-alt"></i> Takım: <%= player.takim_ad %></p>
+                                <p><i class="fas fa-birthday-cake"></i> Yaş: <%= player.oyuncu_yas %></p>
+                                <p><i class="fas fa-euro-sign"></i> Değer: <%= player.oyuncu_degeri %>M</p>
+                                <p><i class="fas fa-euro-sign"></i> Gözlemci Yorumu: <%= player.oyuncu_gozlemci_yorum %></p>
+                            </div>
+                            <div class="player-actions">
+                                <!-- <button class="action-btn"><i class="fas fa-info-circle"></i> Detaylar</button>
+                                <button class="action-btn"><i class="fas fa-star"></i> Takip Et</button> -->
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <p>Oyuncu bulunamadı.</p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <style>
+    .container {
+        display: flex;
+        min-height: 100vh;
+        background: #f5f5f5;
+    }
+
+    .content {
+        flex: 1;
+        padding: 30px;
+        margin-left: 280px; /* Sidebar genişliği kadar margin */
+    }
+
+    h1 {
+        color: #1a237e;
+        margin-bottom: 30px;
+        font-size: 2em;
+    }
+
+    .top-filter {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+
+    .filter-group {
+        display: flex;
+        gap: 10px;
+    }
+
+    .filter-btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        background: #f0f0f0;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .filter-btn:hover {
+        background: #e0e0e0;
+    }
+
+    .filter-btn.active {
+        background: #1a237e;
+        color: white;
+    }
+
+    .players-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .player-card {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: transform 0.3s;
+    }
+
+    .player-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .player-header {
+        border-bottom: 1px solid #eee;
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+    }
+
+    .player-header h3 {
+        margin: 0;
+        color: #1a237e;
+    }
+
+    .player-position {
+        display: inline-block;
+        padding: 5px 10px;
+        background: #e8eaf6;
+        border-radius: 15px;
+        font-size: 0.9em;
+        color: #1a237e;
+        margin-top: 5px;
+    }
+
+    .player-info {
+        margin-bottom: 15px;
+    }
+
+    .player-info p {
+        margin: 10px 0;
+        color: #666;
+    }
+
+    .player-info i {
+        width: 20px;
+        color: #1a237e;
+        margin-right: 10px;
+    }
+
+    .player-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .action-btn {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background: #f0f0f0;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+    }
+
+    .action-btn:hover {
+        background: #1a237e;
+        color: white;
+    }
+
+    .action-btn i {
+        font-size: 0.9em;
+    }
+    </style>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const playerCards = document.querySelectorAll('.player-card');
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                const group = button.dataset.group;
+                
+                playerCards.forEach(card => {
+                    const position = card.querySelector('.player-position').textContent.toLowerCase();
+                    
+                    if (group === 'all' || 
+                        (group === 'defans' && (position.includes('bek') || position.includes('stoper'))) ||
+                        (group === 'ortasaha' && position.includes('orta saha')) ||
+                        (group === 'hucum' && (position.includes('kanat') || position.includes('santrafor')))) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    });
+    </script>

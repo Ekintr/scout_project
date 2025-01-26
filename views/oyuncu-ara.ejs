@@ -1,0 +1,325 @@
+<%- include('partials/header', {title: 'Oyuncu Ara'}) %>
+<%- include('partials/sidebar') %>
+
+<div class="content">
+    <div class="page-header">
+        <h1>Oyuncu Ara</h1>
+    </div>
+
+    <div class="search-container">
+        <form class="search-form" method="POST" action="/oyuncu-ara">
+            <div class="search-grid">
+                <!-- Mevki Seçimi -->
+                <div class="search-group">
+                    <label>Mevki:</label>
+                    <select name="mevki" class="form-select">
+                        <option value="">Tüm Mevkiler</option>
+                        <% mevkiler.forEach(function(mevki) { %>
+                            <option value="<%= mevki.mevki_id %>" 
+                                <%= (filters && filters.mevki === String(mevki.mevki_id)) ? 'selected' : '' %>>
+                                <%= mevki.mevki_ad %>
+                            </option>
+                        <% }); %>
+                    </select>
+                </div>
+
+                <!-- Ayak Seçimi -->
+                <div class="search-group">
+                    <label>Ayak:</label>
+                    <select name="foot" class="form-select">
+                        <option value="">Tüm Ayaklar</option>
+                        <option value="Sağ" <%= (filters && filters.foot === 'Sağ') ? 'selected' : '' %>>Sağ</option>
+                        <option value="Sol" <%= (filters && filters.foot === 'Sol') ? 'selected' : '' %>>Sol</option>
+                        <option value="Çift" <%= (filters && filters.foot === 'Çift') ? 'selected' : '' %>>Çift</option>
+                    </select>
+                </div>
+
+                <!-- Ülke Seçimi -->
+                <div class="search-group">
+                    <label>Ülke:</label>
+                    <select name="country" class="form-select">
+                        <option value="">Tüm Ülkeler</option>
+                        <% ulkeler.forEach(function(ulke) { %>
+                            <option value="<%= ulke.ulke_id %>" 
+                                <%= (filters && filters.country === String(ulke.ulke_id)) ? 'selected' : '' %>>
+                                <%= ulke.ulke_ad %>
+                            </option>
+                        <% }); %>
+                    </select>
+                </div>
+
+                <!-- Gol Aralığı -->
+                <div class="search-group">
+                    <label>Gol Aralığı:</label>
+                    <div class="range-inputs">
+                        <input type="number" name="goalMin" placeholder="Min" min="0" 
+                            value="<%= filters && filters.goalMin || '' %>" class="form-control">
+                        <input type="number" name="goalMax" placeholder="Max" min="0"
+                            value="<%= filters && filters.goalMax || '' %>" class="form-control">
+                    </div>
+                </div>
+
+                <!-- Asist Aralığı -->
+                <div class="search-group">
+                    <label>Asist Aralığı:</label>
+                    <div class="range-inputs">
+                        <input type="number" name="assistMin" placeholder="Min" min="0"
+                            value="<%= filters && filters.assistMin || '' %>" class="form-control">
+                        <input type="number" name="assistMax" placeholder="Max" min="0"
+                            value="<%= filters && filters.assistMax || '' %>" class="form-control">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="search-btn">Ara</button>
+        </form>
+    </div>
+
+    <!-- Arama Sonuçları -->
+    <% if (players && players.length > 0) { %>
+        <div class="players-container">
+            <div class="players-grid">
+                <% players.forEach(player => { %>
+                    <div class="player-card">
+                        <div class="player-info">
+                            <h3><%= player.oyuncu_ad %></h3>
+                            <p class="position"><%= player.mevki_ad %></p>
+                            <p class="team"><%= player.takim_ad %></p>
+                            <p class="country"><%= player.ulke_ad %></p>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat">
+                                <span class="label">Yaş</span>
+                                <span class="value"><%= player.oyuncu_yas %></span>
+                            </div>
+                            <div class="stat">
+                                <span class="label">Değer</span>
+                                <span class="value">€<%= player.oyuncu_degeri %>M</span>
+                            </div>
+                            <div class="stat">
+                                <span class="label">Gol</span>
+                                <span class="value"><%= player.oyuncu_2022_gol + player.oyuncu_2023_gol %></span>
+                            </div>
+                            <div class="stat">
+                                <span class="label">Asist</span>
+                                <span class="value"><%= player.oyuncu_2022_assist + player.oyuncu_2023_assist %></span>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    <% } %>
+</div>
+
+<style>
+.search-container {
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    margin: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.search-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.search-group {
+    margin-bottom: 15px;
+}
+
+.search-group label {
+    display: block;
+    color: #333;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: normal;
+}
+
+.range-inputs {
+    display: flex;
+    gap: 10px;
+}
+
+.range-inputs input {
+    width: calc(50% - 5px);
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.search-btn {
+    background: #4CAF50;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+}
+
+.search-btn:hover {
+    background: #45a049;
+}
+
+.players-container {
+    padding: 20px;
+}
+
+.players-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.player-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.player-card:hover {
+    transform: translateY(-5px);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.stat {
+    background: #f5f5f5;
+    padding: 8px;
+    border-radius: 5px;
+}
+
+.stat .label {
+    font-size: 0.8em;
+    color: #666;
+}
+
+.stat .value {
+    font-weight: bold;
+    color: #333;
+}
+
+.form-select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    color: #333;
+}
+
+.form-select:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+}
+
+.input-group label {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.range-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.search-group {
+    margin-bottom: 20px;
+}
+</style>
+
+<script>
+document.querySelectorAll('input[name="position"]').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        const isGoalkeeper = this.value === 'Kaleci' && this.checked;
+        document.querySelector('.kaleci-stats').style.display = isGoalkeeper ? 'block' : 'none';
+        document.querySelectorAll('.oyuncu-stats').forEach(el => {
+            el.style.display = isGoalkeeper ? 'none' : 'block';
+        });
+    });
+});
+
+function filterPlayers() {
+    const minGol = parseInt(document.getElementById('min_gol').value) || 0;
+    const minAsist = parseInt(document.getElementById('min_asist').value) || 0;
+
+    const players = document.querySelectorAll('.player-card');
+    players.forEach(player => {
+        let display = true;
+
+        // Gol ve asist verilerini al
+        const statsElement = player.querySelector('.player-info:nth-child(5)');
+        if (statsElement) {
+            const statsText = statsElement.textContent;
+            // 2022/2023: 32 maç, 6 gol, 5 asist formatındaki metni parse et
+            const matches = statsText.match(/(\d+) gol, (\d+) asist/);
+            
+            if (matches) {
+                const goals = parseInt(matches[1]);
+                const assists = parseInt(matches[2]);
+
+                if (goals < minGol || assists < minAsist) {
+                    display = false;
+                }
+            } else {
+                display = false;
+            }
+        }
+
+        player.style.display = display ? 'block' : 'none';
+    });
+}
+
+// Event listeners
+document.getElementById('min_gol').addEventListener('input', filterPlayers);
+document.getElementById('min_asist').addEventListener('input', filterPlayers);
+</script>
+
+<%- include('partials/footer') %> 

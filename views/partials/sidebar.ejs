@@ -1,0 +1,117 @@
+<div class="sidebar">
+    <div class="sidebar-header">
+        <h2>Scout Panel</h2>
+        <p>Hoş geldin, <%= user.username %></p>
+    </div>
+    <div class="sidebar-menu">
+        <a href="/takimim" class="menu-item <%= currentPage === 'takimim' ? 'active' : '' %>">
+            <i class="fas fa-home"></i>
+            Takımım
+        </a>
+        <a href="/transfer-listesi" class="menu-item <%= currentPage === 'transfer-listesi' ? 'active' : '' %>">
+            <i class="fas fa-list"></i>
+            Transfer Listesi
+        </a>
+        <a href="/transfer-analizi" class="menu-item <%= currentPage === 'transfer-analizi' ? 'active' : '' %>">
+            <i class="fas fa-chart-line"></i>
+            Transfer Analizi
+        </a>
+        <a href="/optimal-oyuncu" class="menu-item <%= currentPage === 'optimal-oyuncu' ? 'active' : '' %>">
+            <i class="fas fa-user-check"></i>
+            Optimal Oyuncu
+        </a>
+        <a href="/oyuncu-ara" class="menu-item <%= currentPage === 'oyuncu-ara' ? 'active' : '' %>">
+            <i class="fas fa-search"></i>
+            Oyuncu Ara
+        </a>
+    </div>
+
+    <a href="/logout" class="logout-btn">Çıkış Yap</a>
+</div>
+
+<style>
+.search-section {
+    padding: 15px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin-top: 15px;
+}
+
+.search-section h3 {
+    color: white;
+    margin-bottom: 15px;
+}
+
+.search-group {
+    margin-bottom: 15px;
+}
+
+.search-group label {
+    display: block;
+    color: white;
+    margin-bottom: 5px;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: white;
+    font-size: 0.9em;
+}
+
+.range-inputs {
+    display: flex;
+    gap: 10px;
+}
+
+.range-inputs input {
+    width: 70px;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.1);
+    color: white;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.1);
+    color: white;
+}
+
+.search-btn {
+    width: 100%;
+    padding: 10px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.search-btn:hover {
+    background: #45a049;
+}
+</style>
+
+<script>
+document.querySelectorAll('input[name="position"]').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        const isGoalkeeper = this.value === 'Kaleci' && this.checked;
+        document.querySelector('.kaleci-stats').style.display = isGoalkeeper ? 'block' : 'none';
+        document.querySelectorAll('.oyuncu-stats').forEach(el => {
+            el.style.display = isGoalkeeper ? 'none' : 'block';
+        });
+    });
+});
+</script> 

@@ -1,0 +1,287 @@
+<%- include('partials/header', {title: 'Transfer Analizi'}) %>
+<%- include('partials/sidebar') %>
+
+<div class="content">
+    <div class="page-header">
+        <h1>Transfer Analizi</h1>
+    </div>
+
+    <div class="charts-container">
+        <div class="chart-card">
+            <h2>En Çok Gol Atan Oyuncular</h2>
+            <div class="chart-filters">
+                <button class="chart-filter active" onclick="updateGoalChart('bar')">Bar</button>
+                <button class="chart-filter" onclick="updateGoalChart('radar')">Radar</button>
+            </div>
+            <canvas id="goalChart"></canvas>
+        </div>
+
+        <div class="chart-card">
+            <h2>En Çok Asist Yapan Oyuncular</h2>
+            <div class="chart-filters">
+                <button class="chart-filter active" onclick="updateAssistChart('bar')">Bar</button>
+                <button class="chart-filter" onclick="updateAssistChart('radar')">Radar</button>
+            </div>
+            <canvas id="assistChart"></canvas>
+        </div>
+
+        <div class="chart-card full-width">
+            <h2>Sezon Performans Karşılaştırması</h2>
+            <canvas id="performanceChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<style>
+    .charts-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+        gap: 20px;
+        padding: 20px 0;
+    }
+
+    .chart-card {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .full-width {
+        grid-column: 1 / -1;
+    }
+
+    .chart-card h2 {
+        color: #1a237e;
+        font-size: 1.2em;
+        margin-bottom: 20px;
+    }
+
+    .chart-filters {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .chart-filter {
+        padding: 5px 15px;
+        border: 1px solid #1a237e;
+        border-radius: 15px;
+        background: transparent;
+        color: #1a237e;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .chart-filter.active {
+        background: #1a237e;
+        color: white;
+    }
+
+    canvas {
+        width: 100% !important;
+        height: 300px !important;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let goalChart, assistChart, performanceChart;
+    
+    // Renk paleti
+    const colors = {
+        blue: {
+            primary: 'rgba(54, 162, 235, 0.7)',
+            secondary: 'rgba(54, 162, 235, 1)'
+        },
+        red: {
+            primary: 'rgba(255, 99, 132, 0.7)',
+            secondary: 'rgba(255, 99, 132, 1)'
+        },
+        green: {
+            primary: 'rgba(75, 192, 192, 0.7)',
+            secondary: 'rgba(75, 192, 192, 1)'
+        },
+        purple: {
+            primary: 'rgba(153, 102, 255, 0.7)',
+            secondary: 'rgba(153, 102, 255, 1)'
+        }
+    };
+
+    // Gol verileri
+    const goalData = {
+        labels: <%- JSON.stringify(goalStats.map(p => p.oyuncu_ad)) %>,
+        datasets: [
+            {
+                label: '2022 Golleri',
+                data: <%- JSON.stringify(goalStats.map(p => p.gol_2022)) %>,
+                backgroundColor: colors.blue.primary,
+                borderColor: colors.blue.secondary,
+                borderWidth: 2
+            },
+            {
+                label: '2023 Golleri',
+                data: <%- JSON.stringify(goalStats.map(p => p.gol_2023)) %>,
+                backgroundColor: colors.red.primary,
+                borderColor: colors.red.secondary,
+                borderWidth: 2
+            }
+        ]
+    };
+
+    // Asist verileri
+    const assistData = {
+        labels: <%- JSON.stringify(assistStats.map(p => p.oyuncu_ad)) %>,
+        datasets: [
+            {
+                label: '2022 Asistleri',
+                data: <%- JSON.stringify(assistStats.map(p => p.assist_2022)) %>,
+                backgroundColor: colors.green.primary,
+                borderColor: colors.green.secondary,
+                borderWidth: 2
+            },
+            {
+                label: '2023 Asistleri',
+                data: <%- JSON.stringify(assistStats.map(p => p.assist_2023)) %>,
+                backgroundColor: colors.purple.primary,
+                borderColor: colors.purple.secondary,
+                borderWidth: 2
+            }
+        ]
+    };
+
+    // Performans verileri
+    const performanceData = {
+        labels: <%- JSON.stringify(goalStats.map(p => p.oyuncu_ad)) %>,
+        datasets: [
+            {
+                label: '2023 Toplam Katkı',
+                data: <%- JSON.stringify(goalStats.map(p => p.gol_2023 + (assistStats.find(a => a.oyuncu_ad === p.oyuncu_ad)?.assist_2023 || 0))) %>,
+                backgroundColor: colors.red.primary,
+                borderColor: colors.red.secondary,
+                borderWidth: 2,
+                type: 'bar'
+            },
+            {
+                label: '2022 Toplam Katkı',
+                data: <%- JSON.stringify(goalStats.map(p => p.gol_2022 + (assistStats.find(a => a.oyuncu_ad === p.oyuncu_ad)?.assist_2022 || 0))) %>,
+                backgroundColor: colors.blue.primary,
+                borderColor: colors.blue.secondary,
+                borderWidth: 2,
+                type: 'bar'
+            }
+        ]
+    };
+
+    // Grafik oluşturma fonksiyonları
+    function createGoalChart(type = 'bar') {
+        const ctx = document.getElementById('goalChart');
+        if (goalChart) goalChart.destroy();
+        
+        goalChart = new Chart(ctx, {
+            type: type,
+            data: goalData,
+            options: {
+                responsive: true,
+                scales: {
+                    r: {
+                        beginAtZero: true
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Gol İstatistikleri'
+                    }
+                }
+            }
+        });
+    }
+
+    function createAssistChart(type = 'bar') {
+        const ctx = document.getElementById('assistChart');
+        if (assistChart) assistChart.destroy();
+        
+        assistChart = new Chart(ctx, {
+            type: type,
+            data: assistData,
+            options: {
+                responsive: true,
+                scales: {
+                    r: {
+                        beginAtZero: true
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Asist İstatistikleri'
+                    }
+                }
+            }
+        });
+    }
+
+    function createPerformanceChart() {
+        const ctx = document.getElementById('performanceChart');
+        if (performanceChart) performanceChart.destroy();
+        
+        performanceChart = new Chart(ctx, {
+            type: 'bar',
+            data: performanceData,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Toplam Katkı (Gol + Asist)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Sezonlara Göre Toplam Katkı'
+                    }
+                }
+            }
+        });
+    }
+
+    // Grafik güncelleme fonksiyonları
+    function updateGoalChart(type) {
+        document.querySelectorAll('#goalChart + .chart-filters .chart-filter').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        createGoalChart(type);
+    }
+
+    function updateAssistChart(type) {
+        document.querySelectorAll('#assistChart + .chart-filters .chart-filter').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        createAssistChart(type);
+    }
+
+    // Başlangıç grafikleri
+    createGoalChart();
+    createAssistChart();
+    createPerformanceChart();
+</script>
+
+<%- include('partials/footer') %> 
